@@ -102,7 +102,7 @@ public class PingService {
 	/**
 	 * Returns is PingService is in debugging mode.
 	 * 
-	 * @returns true, if debugging is enabled
+	 * @return true, if debugging is enabled
 	 * */
 	public boolean getDebugging() {
 		return this.debugging;
