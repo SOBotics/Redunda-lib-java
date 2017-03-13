@@ -21,6 +21,11 @@ public class PingService {
 	public String apiKey = "";
 	
 	/**
+	 * If `true`, `standby` will always return `false` for debugging purposes!
+	 * */
+	private boolean debugging = false;
+	
+	/**
 	 * The executor service to ping the server
 	 * */
 	private ScheduledExecutorService executorService;
@@ -55,10 +60,21 @@ public class PingService {
 		this.interval = pingInterval;
 	}
 	
+	public void setDebugging(boolean debug) {
+		this.debugging = debug;
+		if (this.debugging == true) {
+			PingService.standby = new AtomicBoolean(false);
+		}
+	}
+	
+	public boolean getDebugging() {
+		return this.debugging;
+	}
+	
 	/**
 	 * Resets the executor services and starts pinging the server
 	 * */
-	public void start() {
+	public final void start() {
 		this.executorService = null;
 		this.executorService = Executors.newSingleThreadScheduledExecutor();
 		
@@ -82,6 +98,10 @@ public class PingService {
 	 * @source https://www.mkyong.com/java/how-to-send-http-request-getpost-in-java/
 	 * */
 	private void execute() throws Throwable {
+		//don't execute on debug-mode
+		if(this.debugging == true)
+			return;
+		
 		String url = "https://redunda.erwaysoftware.com/status.json";
 		URL obj = new URL(url);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
