@@ -54,6 +54,8 @@ public class PingService {
 	
 	/**
 	 * Initializes the object with the api key
+	 * 
+	 * @param key The API key for Redunda. You can get it form the instances overview
 	 * */
 	public PingService(String key) {
 		this.apiKey = key;
@@ -61,6 +63,9 @@ public class PingService {
 	
 	/**
 	 * Initializes the object with the api key and bot-version
+	 * 
+	 * @param key The API key for Redunda. You can get it form the instances overview
+	 * @param botVersion The version of your bot as string
 	 * */
 	public PingService(String key, String botVersion) {
 		this.apiKey = key;
@@ -69,6 +74,10 @@ public class PingService {
 	
 	/**
 	 * Initializes the object with a `pingInterval` in seconds, the bot's verision and the api key
+	 * 
+	 * @param key The API key for Redunda. You can get it form the instances overview
+	 * @param botVersion The version of your bot as string
+	 * @param pingInterval The time in seconds between two pings. (30 by default)
 	 * */
 	public PingService(String key, String botVersion, int pingInterval) {
 		this.apiKey = key;
@@ -78,6 +87,10 @@ public class PingService {
 	
 	/**
 	 * Enables or disables the debugging mode.
+	 * 
+	 * If the debugging mode is activated, the bot will never be on standby.
+	 * 
+	 * @param debug The new value
 	 * */
 	public void setDebugging(boolean debug) {
 		this.debugging = debug;
@@ -88,6 +101,8 @@ public class PingService {
 	
 	/**
 	 * Returns is PingService is in debugging mode.
+	 * 
+	 * @returns true, if debugging is enabled
 	 * */
 	public boolean getDebugging() {
 		return this.debugging;
