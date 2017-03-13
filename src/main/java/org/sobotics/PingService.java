@@ -1,6 +1,6 @@
+package org.sobotics;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
@@ -9,10 +9,10 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 import javax.net.ssl.HttpsURLConnection;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class PingService {
 	/**
@@ -116,13 +116,12 @@ public class PingService {
 		
 		String responseString = response.toString();
 		
-		//http://stackoverflow.com/a/25948078/4687348
-		JsonReader jsonReader = Json.createReader(new StringReader(responseString));
-		JsonObject object = jsonReader.readObject();
-		jsonReader.close();
+		//http://stackoverflow.com/a/15116323/4687348
+		JsonParser jsonParser = new JsonParser();
+		JsonObject object = (JsonObject)jsonParser.parse(responseString);
 		
 		try {
-			boolean standbyResponse = object.getBoolean("should_standby");
+			boolean standbyResponse = object.get("should_standby").getAsBoolean();
 			PingService.standby.set(standbyResponse);
 		} catch (Throwable e) {
 			//no apikey or server might be offline; don't change status!

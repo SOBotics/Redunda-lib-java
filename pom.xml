@@ -5,13 +5,6 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>Redunda Library</name>
   <description>Communicates with SOBotic's Redunda</description>
-  <dependencies>
-  	<dependency>
-  		<groupId>javax.json</groupId>
-  		<artifactId>javax.json-api</artifactId>
-  		<version>1.0</version>
-  	</dependency>
-  </dependencies>
   
   <distributionManagement>
       <snapshotRepository>
@@ -44,4 +37,11 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+  <dependencies>
+  	<dependency>
+  		<groupId>com.google.code.gson</groupId>
+  		<artifactId>gson</artifactId>
+  		<version>2.8.0</version>
+  	</dependency>
+  </dependencies>
 </project>
