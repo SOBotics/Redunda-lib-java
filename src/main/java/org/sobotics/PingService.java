@@ -2,7 +2,6 @@ package org.sobotics;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
-import java.io.StringReader;
 import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -14,6 +13,9 @@ import javax.net.ssl.HttpsURLConnection;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * Manages the connection to Redunda
+ * */
 public class PingService {
 	/**
 	 * The API-key for the current instance. You can get the key in the Instances-overview on Redunda
@@ -60,6 +62,9 @@ public class PingService {
 		this.interval = pingInterval;
 	}
 	
+	/**
+	 * Enables or disables the debugging mode.
+	 * */
 	public void setDebugging(boolean debug) {
 		this.debugging = debug;
 		if (this.debugging == true) {
@@ -67,6 +72,9 @@ public class PingService {
 		}
 	}
 	
+	/**
+	 * Returns is PingService is in debugging mode.
+	 * */
 	public boolean getDebugging() {
 		return this.debugging;
 	}
@@ -118,11 +126,6 @@ public class PingService {
 		wr.writeBytes(parameters);
 		wr.flush();
 		wr.close();
-		
-		//int responseCode = con.getResponseCode();
-		//System.out.println("\nSending 'POST' request to URL : " + url);
-		//System.out.println("Post parameters : " + parameters);
-		//System.out.println("Response Code : " + responseCode);
 
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
