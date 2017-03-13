@@ -43,6 +43,11 @@ public class PingService {
 	public static AtomicBoolean standby = new AtomicBoolean(true);
 	
 	/**
+	 * The version of the bot as string
+	 * */
+	private String version = null;
+	
+	/**
 	 * Initialize with default values
 	 * */
 	public PingService() {}
@@ -55,10 +60,19 @@ public class PingService {
 	}
 	
 	/**
-	 * Initializes the object with a `pingInterval` in seconds and the api key
+	 * Initializes the object with the api key and bot-version
 	 * */
-	public PingService(String key, int pingInterval) {
+	public PingService(String key, String botVersion) {
 		this.apiKey = key;
+		this.version = botVersion;
+	}
+	
+	/**
+	 * Initializes the object with a `pingInterval` in seconds, the bot's verision and the api key
+	 * */
+	public PingService(String key, String botVersion, int pingInterval) {
+		this.apiKey = key;
+		this.version = botVersion;
 		this.interval = pingInterval;
 	}
 	
@@ -119,6 +133,10 @@ public class PingService {
 		con.setRequestProperty("User-Agent", "Redunda Library");
 		
 		String parameters = "key="+this.apiKey;
+		
+		//add version parameter if available
+		if (this.version != null)
+			parameters = parameters+"&version="+this.version;
 
 		// Send post request
 		con.setDoOutput(true);

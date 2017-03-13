@@ -12,7 +12,7 @@ To implement this library in your Java bot, you need to add the Maven-dependency
 Right after launching your bot, you should initialize `PingService`. This should happen before your bot fetches anything from the Stack Exchange API.
 
 ```
-PingService redunda = new PingService("your api-key");
+PingService redunda = new PingService("your api-key", "bot version");
 redunda.start();
 ```
 
