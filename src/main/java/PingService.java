@@ -7,6 +7,7 @@ import java.net.URL;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.json.Json;
 import javax.json.JsonObject;
@@ -19,6 +20,9 @@ public class PingService {
 	 * */
 	public String apiKey = "";
 	
+	/**
+	 * The executor service to ping the server
+	 * */
 	private ScheduledExecutorService executorService;
 	
 	/**
@@ -29,7 +33,7 @@ public class PingService {
 	/**
 	 * Stores if the bot should be on standby; true by default
 	 * */
-	private boolean standby = true;
+	public static AtomicBoolean standby = new AtomicBoolean(true);
 	
 	/**
 	 * Initialize with default values
@@ -66,7 +70,7 @@ public class PingService {
 	 * */
 	private void secureExecute() {
 		try {
-			
+			this.execute();
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
@@ -95,10 +99,10 @@ public class PingService {
 		wr.flush();
 		wr.close();
 		
-		int responseCode = con.getResponseCode();
-		System.out.println("\nSending 'POST' request to URL : " + url);
-		System.out.println("Post parameters : " + parameters);
-		System.out.println("Response Code : " + responseCode);
+		//int responseCode = con.getResponseCode();
+		//System.out.println("\nSending 'POST' request to URL : " + url);
+		//System.out.println("Post parameters : " + parameters);
+		//System.out.println("Response Code : " + responseCode);
 
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
@@ -119,9 +123,9 @@ public class PingService {
 		
 		try {
 			boolean standbyResponse = object.getBoolean("should_standby");
-			this.standby = standbyResponse;
+			PingService.standby.set(standbyResponse);
 		} catch (Throwable e) {
-			//server might be offline; don't change status!
+			//no apikey or server might be offline; don't change status!
 			e.printStackTrace();
 		}
 	}
