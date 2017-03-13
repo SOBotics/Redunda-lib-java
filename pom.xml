@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.sobotics</groupId>
   <artifactId>redunda-lib</artifactId>
-  <version>0.1.0</version>
+  <version>0.1.1</version>
   <name>Redunda Library</name>
   <description>Communicates with SOBotic's Redunda</description>
   

@@ -110,7 +110,7 @@ public class PingService {
 		if(this.debugging == true)
 			return;
 		
-		String url = "https://redunda.erwaysoftware.com/status.json";
+		String url = "https://redunda.sobotics.org/status.json";
 		URL obj = new URL(url);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
 
