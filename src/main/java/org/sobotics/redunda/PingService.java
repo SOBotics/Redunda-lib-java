@@ -1,4 +1,4 @@
-package org.sobotics;
+package org.sobotics.redunda;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -26,6 +27,11 @@ public class PingService {
 	 * If `true`, `standby` will always return `false` for debugging purposes!
 	 * */
 	private boolean debugging = false;
+	
+	/**
+	 * The object that will be notified about status-changes.
+	 * */
+	public PingServiceDelegate delegate = null;
 	
 	/**
 	 * The executor service to ping the server
@@ -178,7 +184,11 @@ public class PingService {
 		
 		try {
 			boolean standbyResponse = object.get("should_standby").getAsBoolean();
+			boolean oldValue = PingService.standby.get();
 			PingService.standby.set(standbyResponse);
+			if (standbyResponse != oldValue) {
+				if (this.delegate != null)this.delegate.standbyStatusChanged(standbyResponse);
+			}
 		} catch (Throwable e) {
 			//no apikey or server might be offline; don't change status!
 			e.printStackTrace();
