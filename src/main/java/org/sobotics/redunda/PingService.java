@@ -184,7 +184,7 @@ public class PingService {
 		
 		try {
 			boolean standbyResponse = object.get("should_standby").getAsBoolean();
-			boolean oldValue = this.standby.get();
+			boolean oldValue = PingService.standby.get();
 			PingService.standby.set(standbyResponse);
 			if (standbyResponse != oldValue) {
 				if (this.delegate != null)this.delegate.standbyStatusChanged(standbyResponse);
