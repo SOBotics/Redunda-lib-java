@@ -1,5 +1,7 @@
 package org.sobotics.redunda;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +30,11 @@ public class DataService {
 	 * The time between two checks in seconds
 	 * */
 	private int interval = 180;
+	
+	/**
+	 * The list of files to track and synchronize.
+	 * */
+	private List<String> trackedFiles = new ArrayList<String>();
 	
 	/**
 	 * Initialize with default values
@@ -61,6 +68,26 @@ public class DataService {
 	 * */
 	public boolean getDebugging() {
 		return this.debugging;
+	}
+	
+	/**
+	 * Adds a file to the list of tracked files
+	 * 
+	 * @param path The path to the file to track
+	 * */
+	public void trackFile(String path) {
+		if (this.trackedFiles.contains(path)) {
+			System.out.println("Already tracking "+path);
+		} else {
+			this.trackedFiles.add(path);
+		}
+	}
+	
+	/**
+	 * Returns the list of tracked files
+	 * */
+	public List<String> getTrackedFiles() {
+		return this.trackedFiles;
 	}
 	
 	/**
