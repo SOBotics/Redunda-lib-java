@@ -91,6 +91,13 @@ public class PingService {
 	}
 	
 	/**
+	 * Returns a `DataService` with the same API-key as `PingService`
+	 * */
+	public DataService buildDataService() {
+		return new DataService(this.apiKey);
+	}
+	
+	/**
 	 * Enables or disables the debugging mode.
 	 * 
 	 * If the debugging mode is activated, the bot will never be on standby.

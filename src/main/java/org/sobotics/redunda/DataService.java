@@ -108,7 +108,9 @@ public class DataService {
 	}
 	
 	/**
-	 * Uploads all tracked files to Redunda
+	 * Uploads all tracked files to Redunda.
+	 * 
+	 * @note This will ALWAYS overwrite the files on the server
 	 * */
 	public void pushFiles() throws IOException {
 		for (String file : this.trackedFiles) {
@@ -118,6 +120,8 @@ public class DataService {
 	
 	/**
 	 * Uploads a file to Redunda
+	 * 
+	 * @note This will ALWAYS overwrite the files on the server
 	 * 
 	 * @param filename The name of the file to upload
 	 * @throws IOException if the file couldn't be read
