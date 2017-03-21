@@ -221,6 +221,59 @@ public class DataService {
 	}
 	
 	/**
+	 * Downloads the contents of a file from Redunda
+	 * 
+	 * @param filename The name of the file to download
+	 * 
+	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
+	 * */
+	public String getContentOfRemoteFile(String filename) throws Throwable {
+		String encodedFilename;
+		try {
+			encodedFilename = URLEncoder.encode(this.encodeFilename(filename), "UTF-8");
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		String url = "https://redunda.sobotics.org/bots/data/"+encodedFilename+"?key="+this.apiKey;
+		URL obj = new URL(url);
+		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+		//add request header
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", "Redunda Library");
+		
+		int responseCode = con.getResponseCode();
+		if (responseCode != 200)
+			return null;
+		
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		
+		String responseString = response.toString();
+		return responseString;
+	}
+	
+	/**
+	 * Writes an input string to a local file
+	 * 
+	 * @param input The string to write
+	 * @param filename The name of the file
+	 * @throws Throwable If an error occurs while writing
+	 * */
+	private void writeStringToFile(String input, String filename) throws Throwable {
+		Files.write(Paths.get(filename), input.getBytes());
+	}
+	
+	/**
 	 * Resets the executor services and starts checking the files
 	 * */
 	public final void start() {
