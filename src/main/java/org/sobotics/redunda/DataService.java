@@ -114,8 +114,12 @@ public class DataService {
 		return this.trackedFiles;
 	}
 	
-	private String encodeFilename(String filename) throws Throwable {
-		return URLEncoder.encode(filename.replace("/", "_slash_"), "UTF-8");
+	private String encodeFilename(String filename) {
+		return filename.replace("/", "_slash_");
+	}
+	
+	private String decodeFilename(String filename) {
+		return filename.replace("_slash_", "/");
 	}
 	
 	/**
@@ -141,7 +145,7 @@ public class DataService {
 		String content = new String(Files.readAllBytes(Paths.get(filename)));
 		String encodedFilename;
 		try {
-			encodedFilename = this.encodeFilename(filename);
+			encodedFilename = URLEncoder.encode(this.encodeFilename(filename), "UTF-8");
 		} catch (Throwable e) {
 			e.printStackTrace();
 			return;
@@ -208,8 +212,8 @@ public class DataService {
 			JsonObject elementObject = element.getAsJsonObject();
 			String key = elementObject.get("key").getAsString();
 			if (key != null) {
-				//TODO: Decode
-				filenames.add(key);
+				String decodedKey = this.decodeFilename(key);
+				filenames.add(decodedKey);
 			}
 		}
 		
