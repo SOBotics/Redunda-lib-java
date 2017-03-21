@@ -352,10 +352,12 @@ public class DataService {
 				//file is tracked
 				//Compare last changed dates; if remote is newer, add to DL list. If not, add to UL list
 				try {
-					String remoteChangedDateString = remoteFileInfoObject.get("updated_at").getAsString();
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+					long remoteChangedTimestamp = remoteFileInfoObject.get("updated_at").getAsLong() * 1000; //redunds sends seconds. I need milliseconds
+					//String remoteChangedDateString = remoteFileInfoObject.get("updated_at").getAsString();
+					//DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 					
-					LocalDateTime remoteChangedDate = LocalDateTime.parse(remoteChangedDateString, formatter);
+					LocalDateTime remoteChangedDate = Instant.ofEpochMilli(remoteChangedTimestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+					//LocalDateTime remoteChangedDate = LocalDateTime.parse(remoteChangedDateString, formatter);
 					
 					File localFile = new File(remoteFileName);
 					long localChangedTimestamp = localFile.lastModified();
