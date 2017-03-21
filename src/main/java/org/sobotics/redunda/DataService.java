@@ -5,8 +5,6 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -21,7 +19,6 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -378,12 +375,24 @@ public class DataService {
 	}
 	
 	/**
-	 * Resets the executor services and starts checking the files
+	 * Synchronizes the files synchronously and then starts the background thread.
+	 * 
+	 * It's recommended to use this right after launching the bot.
+	 * */
+	public final void syncAndStart() {
+		this.syncFiles();
+		this.start();
+	}
+	
+	/**
+	 * Resets the executor services and starts checking the files after 30 seconds
+	 * 
+	 * If the bus has just started, it is better to call `syncAndStart()`.
 	 * */
 	public final void start() {
 		this.executorService = null;
 		this.executorService = Executors.newSingleThreadScheduledExecutor();
 		
-		//executorService.scheduleAtFixedRate(()->secureExecute(), 0, this.interval, TimeUnit.SECONDS);
+		executorService.scheduleAtFixedRate(()->syncFiles(), 30, this.interval, TimeUnit.SECONDS);
 	}
 }
