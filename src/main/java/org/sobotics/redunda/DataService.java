@@ -37,11 +37,6 @@ public class DataService {
 	public String apiKey = "";
 	
 	/**
-	 * If `true`, `standby` will always return `false` for debugging purposes!
-	 * */
-	private boolean debugging = false;
-	
-	/**
 	 * The executor service to ping the server
 	 * */
 	private ScheduledExecutorService executorService;
@@ -71,23 +66,17 @@ public class DataService {
 	}
 	
 	/**
-	 * Enables or disables the debugging mode.
-	 * 
-	 * If the debugging mode is activated, the bot will never be on standby.
-	 * 
-	 * @param debug The new value
+	 * Sets the time between two syncs. (if your bot syncs automatically)
 	 * */
-	public void setDebugging(boolean debug) {
-		this.debugging = debug;
+	public void setSyncInterval(int seconds) {
+		this.interval = seconds > 0 ? seconds : 180;
 	}
 	
 	/**
-	 * Returns if `DataService` is in debugging mode.
-	 * 
-	 * @return true, if debugging is enabled
+	 * Returns the time in seconds between two syncs.
 	 * */
-	public boolean getDebugging() {
-		return this.debugging;
+	public int getSyncInterval() {
+		return this.interval;
 	}
 	
 	/**
@@ -406,7 +395,7 @@ public class DataService {
 	/**
 	 * Resets the executor services and starts checking the files after 30 seconds
 	 * 
-	 * If the bus has just started, it is better to call `syncAndStart()`.
+	 * If the bot has just started, it is better to call `syncAndStart()`.
 	 * */
 	public final void start() {
 		this.executorService = null;
