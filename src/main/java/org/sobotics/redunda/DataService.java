@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -17,6 +18,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.net.ssl.HttpsURLConnection;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 /**
  * Synchronizes files across bot-instances via Redunda
@@ -166,6 +172,48 @@ public class DataService {
 			response.append(inputLine);
 		}
 		in.close();
+	}
+	
+	public List<String> getRemoteFileList() throws Throwable {
+		String url = "https://redunda.sobotics.org/bots/data.json?key="+this.apiKey;
+		URL obj = new URL(url);
+		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+
+		//add request header
+		con.setRequestMethod("GET");
+		con.setRequestProperty("User-Agent", "Redunda Library");
+		
+		int responseCode = con.getResponseCode();
+		
+		BufferedReader in = new BufferedReader(
+		        new InputStreamReader(con.getInputStream()));
+		String inputLine;
+		StringBuffer response = new StringBuffer();
+
+		while ((inputLine = in.readLine()) != null) {
+			response.append(inputLine);
+		}
+		in.close();
+		
+		String responseString = response.toString();
+		//System.out.println(responseString);
+		
+		//http://stackoverflow.com/a/15116323/4687348
+		JsonParser jsonParser = new JsonParser();
+		JsonArray array = (JsonArray)jsonParser.parse(responseString);
+		
+		List<String> filenames = new ArrayList<String>();
+		
+		for (JsonElement element : array) {
+			JsonObject elementObject = element.getAsJsonObject();
+			String key = elementObject.get("key").getAsString();
+			if (key != null) {
+				//TODO: Decode
+				filenames.add(key);
+			}
+		}
+		
+		return filenames;
 	}
 	
 	/**
