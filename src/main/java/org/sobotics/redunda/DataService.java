@@ -100,6 +100,8 @@ public class DataService {
 	
 	/**
 	 * Returns the list of tracked files
+	 * 
+	 * @warning A tracked file may NOT contain the string `_slash_`!
 	 * */
 	public List<String> getTrackedFiles() {
 		return this.trackedFiles;
@@ -108,8 +110,10 @@ public class DataService {
 	/**
 	 * Uploads all tracked files to Redunda
 	 * */
-	public void pushFiles() {
-		
+	public void pushFiles() throws IOException {
+		for (String file : this.trackedFiles) {
+			this.pushFile(file);
+		}
 	}
 	
 	/**
@@ -120,7 +124,7 @@ public class DataService {
 	 * */
 	public void pushFile(String filename) throws IOException {
 		String content = new String(Files.readAllBytes(Paths.get(filename)));
-		String encodedFilename = URLEncoder.encode(filename, "UTF-8");
+		String encodedFilename = URLEncoder.encode(filename.replace("/", "_slash_"), "UTF-8");
 		
 		
 		String url = "https://redunda.sobotics.org/bots/data/"+encodedFilename+"?key="+this.apiKey;
@@ -147,9 +151,6 @@ public class DataService {
 			response.append(inputLine);
 		}
 		in.close();
-		
-		String responseString = response.toString();
-		System.out.println(responseString);
 	}
 	
 	/**
