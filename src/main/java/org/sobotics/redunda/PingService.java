@@ -7,7 +7,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -122,6 +121,25 @@ public class PingService {
 		this.executorService = Executors.newSingleThreadScheduledExecutor();
 		
 		executorService.scheduleAtFixedRate(()->secureExecute(), 0, this.interval, TimeUnit.SECONDS);
+	}
+	
+	/**
+	 * Fetches the current standby status synchronously from the server
+	 * 
+	 * If an exception occurs, the status will be `true`.
+	 * 
+	 * The value is affected by the debug-mode.
+	 * 
+	 * @return The standby-status
+	 * */
+	public boolean checkStandbyStatus() {
+		try {
+			this.execute();
+			return PingService.standby.get();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return true;
+		}
 	}
 	
 	/**
