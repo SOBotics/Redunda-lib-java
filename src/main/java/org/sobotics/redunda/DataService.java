@@ -2,6 +2,7 @@ package org.sobotics.redunda;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -10,6 +11,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -180,7 +185,7 @@ public class DataService {
 	}
 	
 	/**
-	 * Returns the list of files on the server.
+	 * Returns the list of files on the server as `JsonArray`
 	 * */
 	public JsonArray getRemoteFileList() throws Throwable {
 		String url = "https://redunda.sobotics.org/bots/data.json?key="+this.apiKey;
@@ -286,7 +291,7 @@ public class DataService {
 	 * Tracked files that are not on the server will be uploaded.
 	 * 
 	 * Downloaded files will overwrite the local files, if the are newer.
-	 * Uploaded files will __always__ overwrite the files on the server. (see `pushFile(String)`)
+	 * Uploaded files will *always* overwrite the files on the server. (see `pushFile(String)`)
 	 * 
 	 * */
 	public void syncFiles() {
@@ -315,7 +320,23 @@ public class DataService {
 			//check if file is tracked
 			if (this.trackedFiles.contains(remoteFileName)) {
 				//file is tracked
-				//TODO: Compare last changed dates; if remote is newer, add to DL list. If not, add to UL list
+				//Compare last changed dates; if remote is newer, add to DL list. If not, add to UL list
+				try {
+					String remoteChangedDateString = remoteFileInfoObject.get("updated_at").getAsString();
+					LocalDateTime remoteChangedDate = LocalDateTime.parse(remoteChangedDateString);
+					
+					File localFile = new File(remoteFileName);
+					long localChangedTimestamp = localFile.lastModified();
+					LocalDateTime localChangedDate = Instant.ofEpochMilli(localChangedTimestamp).atZone(ZoneId.systemDefault()).toLocalDateTime();
+					
+					if (remoteChangedDate.isAfter(localChangedDate)) {
+						//remote file is newer
+						filesToDownload.add(remoteFileName);
+					}
+					
+				} catch (DateTimeParseException e) {
+					e.printStackTrace();
+				}
 			} else {
 				//file is not tracked -> download it
 				filesToDownload.add(remoteFileName);
