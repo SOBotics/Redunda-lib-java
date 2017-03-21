@@ -229,13 +229,27 @@ public class DataService {
 	}
 	
 	/**
-	 * Downloads the contents of a file from Redunda
+	 * Downloads the contents of a file from Redunda.
+	 * 
+	 * If the file is not tracked, it will be added to `this.trackedFiles`. You can change this behavior by using `this.getContentOfRemoteFile(String, boolean)`.
 	 * 
 	 * @param filename The name of the file to download
 	 * 
 	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
 	 * */
 	public String getContentOfRemoteFile(String filename) throws Throwable {
+		return this.getContentOfRemoteFile(filename, true);
+	}
+	
+	/**
+	 * Downloads the contents of a file from Redunda
+	 * 
+	 * @param filename The name of the file to download
+	 * @param trackFile If `true`, the file will be added to the list of tracked files
+	 * 
+	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
+	 * */
+	public String getContentOfRemoteFile(String filename, boolean trackFile) throws Throwable {
 		String encodedFilename;
 		try {
 			encodedFilename = URLEncoder.encode(this.encodeFilename(filename), "UTF-8");
@@ -267,6 +281,11 @@ public class DataService {
 		in.close();
 		
 		String responseString = response.toString();
+		
+		//add to tracked files?
+		if (trackFile == true && this.trackedFiles.contains(filename))
+			this.trackedFiles.add(filename);
+		
 		return responseString;
 	}
 	
