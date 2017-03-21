@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -107,6 +108,10 @@ public class DataService {
 		return this.trackedFiles;
 	}
 	
+	private String encodeFilename(String filename) throws Throwable {
+		return URLEncoder.encode(filename.replace("/", "_slash_"), "UTF-8");
+	}
+	
 	/**
 	 * Uploads all tracked files to Redunda.
 	 * 
@@ -128,7 +133,13 @@ public class DataService {
 	 * */
 	public void pushFile(String filename) throws IOException {
 		String content = new String(Files.readAllBytes(Paths.get(filename)));
-		String encodedFilename = URLEncoder.encode(filename.replace("/", "_slash_"), "UTF-8");
+		String encodedFilename;
+		try {
+			encodedFilename = this.encodeFilename(filename);
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return;
+		}
 		
 		
 		String url = "https://redunda.sobotics.org/bots/data/"+encodedFilename+"?key="+this.apiKey;
