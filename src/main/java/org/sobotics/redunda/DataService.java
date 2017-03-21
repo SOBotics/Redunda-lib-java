@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -323,7 +324,9 @@ public class DataService {
 				//Compare last changed dates; if remote is newer, add to DL list. If not, add to UL list
 				try {
 					String remoteChangedDateString = remoteFileInfoObject.get("updated_at").getAsString();
-					LocalDateTime remoteChangedDate = LocalDateTime.parse(remoteChangedDateString);
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+					
+					LocalDateTime remoteChangedDate = LocalDateTime.parse(remoteChangedDateString, formatter);
 					
 					File localFile = new File(remoteFileName);
 					long localChangedTimestamp = localFile.lastModified();
