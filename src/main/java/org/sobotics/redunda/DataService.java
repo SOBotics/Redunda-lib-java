@@ -34,11 +34,6 @@ public class DataService {
 	public String apiKey = "";
 	
 	/**
-	 * Stores if files should be uploaded automatically
-	 * */
-	private boolean autoUpload = false;
-	
-	/**
 	 * If `true`, `standby` will always return `false` for debugging purposes!
 	 * */
 	private boolean debugging = false;
@@ -114,10 +109,16 @@ public class DataService {
 		return this.trackedFiles;
 	}
 	
+	/**
+	 * Encodes a filename
+	 * */
 	private String encodeFilename(String filename) {
 		return filename.replace("/", "_slash_");
 	}
 	
+	/**
+	 * Decodes a filename
+	 * */
 	private String decodeFilename(String filename) {
 		return filename.replace("_slash_", "/");
 	}
