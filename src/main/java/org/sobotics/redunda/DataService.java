@@ -178,7 +178,10 @@ public class DataService {
 		in.close();
 	}
 	
-	public List<String> getRemoteFileList() throws Throwable {
+	/**
+	 * Returns the list of files on the server.
+	 * */
+	public JsonArray getRemoteFileList() throws Throwable {
 		String url = "https://redunda.sobotics.org/bots/data.json?key="+this.apiKey;
 		URL obj = new URL(url);
 		HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
@@ -205,7 +208,8 @@ public class DataService {
 		//http://stackoverflow.com/a/15116323/4687348
 		JsonParser jsonParser = new JsonParser();
 		JsonArray array = (JsonArray)jsonParser.parse(responseString);
-		
+		return array;
+		/*
 		List<String> filenames = new ArrayList<String>();
 		
 		for (JsonElement element : array) {
@@ -217,7 +221,7 @@ public class DataService {
 			}
 		}
 		
-		return filenames;
+		return filenames;*/
 	}
 	
 	/**
@@ -271,6 +275,81 @@ public class DataService {
 	 * */
 	private void writeStringToFile(String input, String filename) throws Throwable {
 		Files.write(Paths.get(filename), input.getBytes());
+	}
+	
+	/**
+	 * Synchronizes the files for the bot via Redunda.
+	 * 
+	 * First, the list of files on Redunda will be downloaded. This list will be compared with `this.trackedFiles`.
+	 * Files that exist on the server but not on the client, will be downloaded.
+	 * Tracked files that are not on the server will be uploaded.
+	 * 
+	 * Downloaded files will overwrite the local files, if the are newer.
+	 * Uploaded files will __always__ overwrite the files on the server. (see `pushFile(String)`)
+	 * 
+	 * */
+	public void syncFiles() {
+		List<String> filesToDownload = new ArrayList<String>();
+		List<String> filesToUpload = new ArrayList<String>();
+		List<String> remoteFileNames = new ArrayList<String>();
+		JsonArray remoteFilesInfo;
+		
+		//Create the lists of files to up- and download
+		
+		try {
+			remoteFilesInfo = this.getRemoteFileList();
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		//loop through remote files
+		for (JsonElement remoteFileInfo : remoteFilesInfo) {
+			JsonObject remoteFileInfoObject = remoteFileInfo.getAsJsonObject();
+			String remoteFileName = this.decodeFilename(remoteFileInfoObject.get("key").getAsString());
+			
+			//add to list for later usage (see next for-loop)
+			remoteFileNames.add(remoteFileName);
+			
+			//check if file is tracked
+			if (this.trackedFiles.contains(remoteFileName)) {
+				//file is tracked
+				//TODO: Compare last changed dates; if remote is newer, add to DL list. If not, add to UL list
+			} else {
+				//file is not tracked -> download it
+				filesToDownload.add(remoteFileName);
+			}
+		}
+		
+		//loop through tracked files
+		for (String trackedFileName : this.trackedFiles) {
+			if (remoteFileNames.contains(trackedFileName)) {
+				//file exists on server -> Do nothing. Will be handled in the previous for-loop
+			} else {
+				//file doesn't exist on server -> upload it
+				filesToUpload.add(trackedFileName);
+			}
+		}
+		
+		
+		//Upload the files
+		for (String fileToUpload : filesToUpload) {
+			try {
+				this.pushFile(fileToUpload);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		//Download the files
+		for (String fileToDownload : filesToDownload) {
+			try {
+				String fileContent = this.getContentOfRemoteFile(fileToDownload);
+				this.writeStringToFile(fileContent, fileToDownload);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/**
