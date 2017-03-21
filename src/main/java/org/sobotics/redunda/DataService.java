@@ -67,6 +67,8 @@ public class DataService {
 	
 	/**
 	 * Sets the time between two syncs. (if your bot syncs automatically)
+	 * 
+	 * @param seconds The new value
 	 * */
 	public void setSyncInterval(int seconds) {
 		this.interval = seconds > 0 ? seconds : 180;
@@ -74,6 +76,8 @@ public class DataService {
 	
 	/**
 	 * Returns the time in seconds between two syncs.
+	 * 
+	 * @return The value in seconds
 	 * */
 	public int getSyncInterval() {
 		return this.interval;
@@ -95,7 +99,9 @@ public class DataService {
 	/**
 	 * Returns the list of tracked files
 	 * 
-	 * @warning A tracked file may NOT contain the string `_slash_`!
+	 * A tracked file may NOT contain the string `_slash_`!
+	 * 
+	 * @return The list of tracked files
 	 * */
 	public List<String> getTrackedFiles() {
 		return this.trackedFiles;
@@ -103,6 +109,10 @@ public class DataService {
 	
 	/**
 	 * Encodes a filename
+	 * 
+	 * @param filename The filename to encode
+	 * 
+	 * @return The encoded filename
 	 * */
 	private String encodeFilename(String filename) {
 		return filename.replace("/", "_slash_");
@@ -110,6 +120,10 @@ public class DataService {
 	
 	/**
 	 * Decodes a filename
+	 * 
+	 * @param filename The filename to decode
+	 * 
+	 * @return The decoded filename
 	 * */
 	private String decodeFilename(String filename) {
 		return filename.replace("_slash_", "/");
@@ -118,7 +132,9 @@ public class DataService {
 	/**
 	 * Uploads all tracked files to Redunda.
 	 * 
-	 * @note This will ALWAYS overwrite the files on the server
+	 * This will ALWAYS overwrite the files on the server
+	 * 
+	 * @throws IOException If the upload of a file fails
 	 * */
 	public void pushFiles() throws IOException {
 		for (String file : this.trackedFiles) {
@@ -129,7 +145,7 @@ public class DataService {
 	/**
 	 * Uploads a file to Redunda
 	 * 
-	 * @note This will ALWAYS overwrite the files on the server
+	 * This will ALWAYS overwrite the files on the server
 	 * 
 	 * @param filename The name of the file to upload
 	 * @throws IOException if the file couldn't be read
@@ -173,6 +189,10 @@ public class DataService {
 	
 	/**
 	 * Returns the list of files on the server as `JsonArray`
+	 * 
+	 * @throws Throwable If the download/parsing fails
+	 * 
+	 * @return An array of objects with information about the stored files
 	 * */
 	public JsonArray getRemoteFileList() throws Throwable {
 		String url = "https://redunda.sobotics.org/bots/data.json?key="+this.apiKey;
@@ -224,6 +244,8 @@ public class DataService {
 	 * 
 	 * @param filename The name of the file to download
 	 * 
+	 * @throws Throwable If an error occurs while downloading the file
+	 * 
 	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
 	 * */
 	public String getContentOfRemoteFile(String filename) throws Throwable {
@@ -235,6 +257,8 @@ public class DataService {
 	 * 
 	 * @param filename The name of the file to download
 	 * @param trackFile If `true`, the file will be added to the list of tracked files
+	 * 
+	 * @throws Throwable If an error occurs while downloading the file
 	 * 
 	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
 	 * */

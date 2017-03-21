@@ -92,6 +92,8 @@ public class PingService {
 	
 	/**
 	 * Returns a `DataService` with the same API-key as `PingService`
+	 * 
+	 * @return A `DataService`
 	 * */
 	public DataService buildDataService() {
 		return new DataService(this.apiKey);
