@@ -152,6 +152,7 @@ public class DataService {
 	 * */
 	public void pushFile(String filename) throws IOException {
 		String content = new String(Files.readAllBytes(Paths.get(filename)));
+		System.out.println(content);
 		String encodedFilename;
 		try {
 			encodedFilename = URLEncoder.encode(this.encodeFilename(filename), "UTF-8");
@@ -289,7 +290,7 @@ public class DataService {
 		StringBuffer response = new StringBuffer();
 
 		while ((inputLine = in.readLine()) != null) {
-			response.append(inputLine);
+			response.append(inputLine+"\n"); //http://stackoverflow.com/a/4825297/4687348
 		}
 		in.close();
 		
