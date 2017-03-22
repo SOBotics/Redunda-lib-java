@@ -178,7 +178,7 @@ public class PingService {
 
 		//add request header
 		con.setRequestMethod("POST");
-		con.setRequestProperty("User-Agent", "Redunda Library");
+		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
 		String parameters = "key="+this.apiKey;
 		

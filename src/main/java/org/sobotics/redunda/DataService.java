@@ -168,7 +168,7 @@ public class DataService {
 
 		//add request header
 		con.setRequestMethod("POST");
-		con.setRequestProperty("User-Agent", "Redunda Library");
+		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
 		// Send post request
 		con.setDoOutput(true);
@@ -202,7 +202,7 @@ public class DataService {
 
 		//add request header
 		con.setRequestMethod("GET");
-		con.setRequestProperty("User-Agent", "Redunda Library");
+		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
 		int responseCode = con.getResponseCode();
 		
@@ -278,7 +278,7 @@ public class DataService {
 
 		//add request header
 		con.setRequestMethod("GET");
-		con.setRequestProperty("User-Agent", "Redunda Library");
+		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
 		int responseCode = con.getResponseCode();
 		if (responseCode != 200)
