@@ -91,6 +91,15 @@ public class PingService {
 	}
 	
 	/**
+	 * Returns a `DataService` with the same API-key as `PingService`
+	 * 
+	 * @return A `DataService`
+	 * */
+	public DataService buildDataService() {
+		return new DataService(this.apiKey);
+	}
+	
+	/**
 	 * Enables or disables the debugging mode.
 	 * 
 	 * If the debugging mode is activated, the bot will never be on standby.
@@ -169,7 +178,7 @@ public class PingService {
 
 		//add request header
 		con.setRequestMethod("POST");
-		con.setRequestProperty("User-Agent", "Redunda Library");
+		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
 		String parameters = "key="+this.apiKey;
 		
