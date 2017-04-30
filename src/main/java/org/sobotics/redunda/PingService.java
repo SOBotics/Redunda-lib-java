@@ -54,8 +54,10 @@ public class PingService {
 	
 	/**
 	 * The location, the bot is running on
+	 * 
+	 * Note: Accessing this variable will not contact Redunda. You should ping Redunda first.
 	 * */
-	private String location = "undefined/location";
+	public static String location = "undefined/location";
 	
 	/**
 	 * Initialize with default values
@@ -157,17 +159,6 @@ public class PingService {
 	}
 	
 	/**
-	 * Returns the location that was sent by Redunda.
-	 * 
-	 * Note: This will not contact Redunda. You should ping Redunda first.
-	 * 
-	 * @return The location
-	 * */
-	public String getLocation() {
-		return this.location;
-	}
-	
-	/**
 	 * Executes execute() and catches all errors
 	 * */
 	private void secureExecute() {
@@ -231,7 +222,7 @@ public class PingService {
 			PingService.standby.set(standbyResponse);
 			
 			String newLocation = object.get("location").getAsString();
-			this.location = newLocation;
+			PingService.location = newLocation;
 			
 			if (standbyResponse != oldValue) {
 				if (this.delegate != null)this.delegate.standbyStatusChanged(standbyResponse);
