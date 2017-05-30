@@ -12,7 +12,6 @@ import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -204,7 +203,7 @@ public class DataService {
 		con.setRequestMethod("GET");
 		con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
 		
-		int responseCode = con.getResponseCode();
+		con.getResponseCode();
 		
 		BufferedReader in = new BufferedReader(
 		        new InputStreamReader(con.getInputStream()));
