@@ -1,5 +1,5 @@
 # Redunda-lib-java
-A Java-library to communicate with [Redunda](https://redunda.erwaysoftware.com).
+A Java-library to communicate with [Redunda](https://redunda.sobotics.org).
 
 # Implementation
 
@@ -37,3 +37,7 @@ redunda.setDebugging(true);
 ```
 
 This will prevent `PingService.standby` from becoming `true` and stops pinging the server.
+
+# Documentation
+
+The full documentation is available at [redunda-java.sobotics.org](http://redunda-java.sobotics.org)
