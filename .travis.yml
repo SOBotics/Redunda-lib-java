@@ -25,7 +25,7 @@ deploy:
       repo: SOBotics/Redunda-lib-java
       tags: true
       jdk: oraclejdk8
-   -
+  -
     provider: script
     script: .travis/deploy.sh
     skip_cleanup: true
