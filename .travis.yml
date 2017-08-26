@@ -1,7 +1,41 @@
 language: java
 jdk:
- - oraclejdk8
- 
+  - oraclejdk8
+  - oraclejdk7
+  - openjdk7
+install:
+  - mvn --settings .travis/settings.xml install -DskipTests=true -Dgpg.skip -Dmaven.javadoc.skip=true -B -V
+before_install:
+  - if [ ! -z "$GPG_SECRET_KEYS" ]; then echo $GPG_SECRET_KEYS | base64 --decode | $GPG_EXECUTABLE --import; fi
+  - if [ ! -z "$GPG_OWNERTRUST" ]; then echo $GPG_OWNERTRUST | base64 --decode | $GPG_EXECUTABLE --import-ownertrust; fi
+deploy:
+  -
+    provider: script
+    script: .travis/deploy.sh
+    skip_cleanup: true
+    on:
+      repo: SOBotics/Redunda-lib-java
+      branch: master
+      jdk: oraclejdk8
+  -
+    provider: script
+    script: .travis/deploy.sh
+    skip_cleanup: true
+    on:
+      repo: SOBotics/Redunda-lib-java
+      tags: true
+      jdk: oraclejdk8
+
+
+
+
+
+
+# OLD
+#language: java
+#jdk:
+# - oraclejdk8
+# 
 #env:
 #global:
 #    - secure: "bDQSqAQM8rsuQ1rUjMa1eyy5EbxLNBoUNB4c8oNDhs6QAiNiaJVEWpwABqPB3WTW2kHO/eVKybQTly3dnoWYnnnFCA5o1eIxoZGrPPDRX5NprhX49xebf7YZW8g4/l9EHJbxzYFaVZPgBAAhQK5RckbNgQnQMoJuQLZzwtqxHfuyKo6JwOEEv/cT1pI6J38V71roMFmHaFWE94HihYSM3ZefshMA+eUsAKWoBqFwhbONFtXOO73TQ1i7B7RboK5XjBJglXDG2q6d8yCap4cI+vub1tyOCPqhz+MQdu/idPEXmd2UVEP7phz/OPxnFizE7EJZoHiOemVNR9wUJVphvOm6cx+9OfBoi/ZlslBLV+ixXYZT6ImtixymMQS0WvpCPzAk4lyfuLDtAh7YbzTE+Z+80qEecM7vBojuxSN+T7ul2+hAIBi3zWXhqe/cKACCI2moL3JE51c0TwJWdsi2T0zv/meJ/EHI6BTxuIXDsS0YD6pkA/0p3wrPoEXPPnX1djP2JARvJw+pdmV+37wa/ZkRr3AYIZqJEJs1U/7T3zjIJ0wIeck6D6w3LIm0xqkqVrlevH1hThNdYT9t6xjTcaWiS4bhHtvyP/Zs9x46iUNE6IuM5K2TbnyKQ+152iUQnHJiVeTltfp8zg1AXxyvHZrFU41xTeKJsyk/GymqDeM="
