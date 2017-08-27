@@ -232,8 +232,8 @@ public class PingService {
 			}
 		} catch (Throwable e) {
 			//no apikey or server might be offline; don't change status!
-			e.printStackTrace();
 			this.forwardError(e);
+			throw e;
 		}
 	}
 	
