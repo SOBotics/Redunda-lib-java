@@ -155,9 +155,8 @@ public class PingService {
 			this.execute();
 			return PingService.standby.get();
 		} catch (Throwable e) {
-			e.printStackTrace();
 			this.forwardError(e);
-			return true;
+			throw e;
 		}
 	}
 	
@@ -238,7 +237,11 @@ public class PingService {
 		}
 	}
 	
-	
+	/**
+	 * Sends a thrown error to the delegate, if the delegate is not null.
+	 * 
+	 * @param e The exception
+	 * */
 	private void forwardError(Throwable e) {
 		if (this.delegate != null)
 			this.delegate.error(e);
