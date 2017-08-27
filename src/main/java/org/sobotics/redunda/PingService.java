@@ -147,8 +147,10 @@ public class PingService {
 	 * The value is affected by the debug-mode.
 	 * 
 	 * @return The standby-status
+	 * 
+	 * @throws Throwable, if an error occurs. Additionally, delegate.error() will be called
 	 * */
-	public boolean checkStandbyStatus() {
+	public boolean checkStandbyStatus() throws Throwable {
 		try {
 			this.execute();
 			return PingService.standby.get();
