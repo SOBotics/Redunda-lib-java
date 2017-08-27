@@ -154,6 +154,7 @@ public class PingService {
 			return PingService.standby.get();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			this.forwardError(e);
 			return true;
 		}
 	}
@@ -166,6 +167,7 @@ public class PingService {
 			this.execute();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			this.forwardError(e);
 		}
 	}
 	
@@ -230,6 +232,13 @@ public class PingService {
 		} catch (Throwable e) {
 			//no apikey or server might be offline; don't change status!
 			e.printStackTrace();
+			this.forwardError(e);
 		}
+	}
+	
+	
+	private void forwardError(Throwable e) {
+		if (this.delegate != null)
+			this.delegate.error(e);
 	}
 }
