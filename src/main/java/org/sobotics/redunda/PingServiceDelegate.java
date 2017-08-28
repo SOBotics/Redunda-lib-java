@@ -7,4 +7,6 @@ public interface PingServiceDelegate {
 	 * @param newStatus The new status
 	 * */
 	void standbyStatusChanged(boolean newStatus);
+	
+	void error(Throwable e);
 }

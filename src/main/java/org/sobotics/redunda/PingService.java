@@ -147,14 +147,16 @@ public class PingService {
 	 * The value is affected by the debug-mode.
 	 * 
 	 * @return The standby-status
+	 * 
+	 * @throws Throwable, if an error occurs. Additionally, delegate.error() will be called
 	 * */
-	public boolean checkStandbyStatus() {
+	public boolean checkStandbyStatus() throws Throwable {
 		try {
 			this.execute();
 			return PingService.standby.get();
 		} catch (Throwable e) {
-			e.printStackTrace();
-			return true;
+			this.forwardError(e);
+			throw e;
 		}
 	}
 	
@@ -166,6 +168,7 @@ public class PingService {
 			this.execute();
 		} catch (Throwable e) {
 			e.printStackTrace();
+			this.forwardError(e);
 		}
 	}
 	
@@ -229,7 +232,18 @@ public class PingService {
 			}
 		} catch (Throwable e) {
 			//no apikey or server might be offline; don't change status!
-			e.printStackTrace();
+			this.forwardError(e);
+			throw e;
 		}
+	}
+	
+	/**
+	 * Sends a thrown error to the delegate, if the delegate is not null.
+	 * 
+	 * @param e The exception
+	 * */
+	private void forwardError(Throwable e) {
+		if (this.delegate != null)
+			this.delegate.error(e);
 	}
 }
