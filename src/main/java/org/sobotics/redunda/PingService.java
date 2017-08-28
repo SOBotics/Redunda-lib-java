@@ -148,7 +148,7 @@ public class PingService {
 	 * 
 	 * @return The standby-status
 	 * 
-	 * @throws Throwable, if an error occurs. Additionally, delegate.error() will be called
+	 * @throws Throwable if an error occurs. Additionally, delegate.error() will be called
 	 * */
 	public boolean checkStandbyStatus() throws Throwable {
 		try {
