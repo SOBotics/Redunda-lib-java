@@ -1,10 +1,18 @@
 package org.sobotics.redunda;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutput;
 import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
@@ -141,6 +149,68 @@ public class DataService {
 		}
 	}
 	
+	
+	
+	/**
+	 * Uploads a file to Redunda
+	 * 
+	 * This will ALWAYS overwrite the files on the server
+	 * 
+	 * @param filename The name of the file to upload
+	 * @throws IOException 
+	 * @throws IOException if the file couldn't be read
+	 * */
+	public void pushFile(SyncedFile file) throws IOException {
+		String encodedFilename;
+		DataOutputStream wr = null;
+		BufferedReader in = null;
+		try {
+			encodedFilename = URLEncoder.encode(this.encodeFilename(file.getPath()), "UTF-8");
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return;
+		}
+		
+		//Filename encoded. Opening connection to Redunda...
+		String url = "https://redunda.sobotics.org/bots/data/"+encodedFilename+"?key="+this.apiKey;
+		
+		try {
+			URL obj = new URL(url);
+			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			
+			//add request header
+			con.setRequestMethod("POST");
+			con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
+			con.setRequestProperty("Content-Type", "application/octet-stream");
+			
+			con.setDoOutput(true);
+			wr = new DataOutputStream(con.getOutputStream());
+			wr.write(file.getData());
+			wr.flush();
+			
+			
+			//Fetch the response of the POST-Request
+			in = new BufferedReader(
+			        new InputStreamReader(con.getInputStream()));
+			String inputLine;
+			StringBuffer response = new StringBuffer();
+
+			while ((inputLine = in.readLine()) != null) {
+				response.append(inputLine);
+			}
+			
+		}
+		finally {
+			//Close the connection in the finally-block, so it will be closed on errors
+			if (wr != null)
+				wr.close();
+			
+			if (in != null)
+				in.close();
+		}
+	}
+	
+	
 	/**
 	 * Uploads a file to Redunda
 	 * 
@@ -149,6 +219,7 @@ public class DataService {
 	 * @param filename The name of the file to upload
 	 * @throws IOException if the file couldn't be read
 	 * */
+	@Deprecated
 	public void pushFile(String filename) throws IOException {
 		String content = new String(Files.readAllBytes(Paths.get(filename)));
 		System.out.println(content);
@@ -248,8 +319,58 @@ public class DataService {
 	 * 
 	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
 	 * */
+	@Deprecated
 	public String getContentOfRemoteFile(String filename) throws Throwable {
 		return this.getContentOfRemoteFile(filename, true);
+	}
+	
+	
+	public SyncedFile getRemoteFile(String filename) throws IOException {
+		String encodedFilename;
+		DataInputStream input = null;
+		SyncedFile downloadedFile = null;
+		try {
+			encodedFilename = URLEncoder.encode(this.encodeFilename(filename), "UTF-8");
+		} catch (Throwable e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+		try {
+			String url = "https://redunda.sobotics.org/bots/data/"+encodedFilename+"?key="+this.apiKey;
+			URL obj = new URL(url);
+			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			
+			//add request header
+			con.setRequestMethod("GET");
+			con.setRequestProperty("User-Agent", UserAgent.getUserAgent());
+			con.setRequestProperty("Content-Type", "application/octet-stream");
+			
+			int responseCode = con.getResponseCode();
+			if (responseCode != 200)
+				return null;
+			
+			input = new DataInputStream(con.getInputStream());
+			ByteArrayOutputStream output = new ByteArrayOutputStream();
+			int n;
+			byte[] buffer = new byte[4096];
+			while ((n = input.read(buffer)) != -1) 
+			{
+				output.write(buffer, 0, n);
+				
+			}
+			
+			byte[] data = output.toByteArray();
+			
+			downloadedFile = new SyncedFile(filename, data);
+		}
+		finally {
+			if (input != null)
+				input.close();
+		}
+		
+		return downloadedFile;
 	}
 	
 	/**
@@ -262,6 +383,7 @@ public class DataService {
 	 * 
 	 * @return The content of the file or `null` if an error occurs. (for example status not 200)
 	 * */
+	@Deprecated
 	public String getContentOfRemoteFile(String filename, boolean trackFile) throws Throwable {
 		String encodedFilename;
 		try {
@@ -309,6 +431,7 @@ public class DataService {
 	 * @param filename The name of the file
 	 * @throws Throwable If an error occurs while writing
 	 * */
+	@Deprecated
 	private void writeStringToFile(String input, String filename) throws Throwable {
 		Files.write(Paths.get(filename), input.getBytes());
 	}
