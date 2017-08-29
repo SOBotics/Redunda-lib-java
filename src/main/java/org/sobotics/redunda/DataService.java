@@ -122,7 +122,7 @@ public class DataService {
 	 * @return The encoded filename
 	 * */
 	private String encodeFilename(String filename) {
-		return filename.replace("/", "_slash_");
+		return filename.replace("/", "_slash_").replace("-", "_dash_");
 	}
 	
 	/**
@@ -133,7 +133,7 @@ public class DataService {
 	 * @return The decoded filename
 	 * */
 	private String decodeFilename(String filename) {
-		return filename.replace("_slash_", "/");
+		return filename.replace("_slash_", "/").replace("_dash_", "-");
 	}
 	
 	/**

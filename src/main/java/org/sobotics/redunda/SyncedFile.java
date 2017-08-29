@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 /**
  * Represents a file that is synced with Redunda
  * */
-class SyncedFile {
+public class SyncedFile {
 	private String path;
 	private byte[] data;
 	
