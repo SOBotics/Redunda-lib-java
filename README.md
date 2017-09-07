@@ -9,8 +9,8 @@ To implement this library in your Java bot, you need to add this to your `pom.xm
 
 ```xml
 <dependency>
-		<groupId>org.sobotics</groupId>
-		<artifactId>redunda-lib</artifactId>
+    <groupId>org.sobotics</groupId>
+    <artifactId>redunda-lib</artifactId>
     <version>1.0.0</version>
 </dependency>
 ```
