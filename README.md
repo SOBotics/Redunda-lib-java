@@ -5,7 +5,15 @@ A Java-library to communicate with [Redunda](https://redunda.sobotics.org).
 
 ### Add dependency
 
-To implement this library in your Java bot, you need to add the Maven-dependency `org.sobotics.redunda-lib`.
+To implement this library in your Java bot, you need to add this to your `pom.xml`:
+
+```xml
+<dependency>
+		<groupId>org.sobotics</groupId>
+		<artifactId>redunda-lib</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
 
 ### Initialize
 
